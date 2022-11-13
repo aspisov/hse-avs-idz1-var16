@@ -3,15 +3,15 @@
 	.text
 	.globl	count
 	.type	count, @function
-count:
+count:    # вызов функции count с string в rdi, digits в rsi, letters в rdx
 	push	rbp
 	mov	rbp, rsp
 	push	rbx
 	sub	rsp, 56
-	mov	QWORD PTR -40[rbp], rdi
-	mov	QWORD PTR -48[rbp], rsi
-	mov	QWORD PTR -56[rbp], rdx
-	mov	DWORD PTR -20[rbp], 0
+	mov	QWORD PTR -40[rbp], rdi    	# string
+	mov	QWORD PTR -48[rbp], rsi		# digits
+	mov	QWORD PTR -56[rbp], rdx		# letters
+	mov	DWORD PTR -20[rbp], 0		# локальная переменная i
 	jmp	.L2
 .L6:
 	mov	eax, DWORD PTR -20[rbp]
@@ -89,7 +89,7 @@ count:
 	nop
 	mov	rbx, QWORD PTR -8[rbp]
 	leave
-	ret
+	ret		# возврат из функции
 	.size	count, .-count
 	.section	.rodata
 .LC0:
@@ -110,36 +110,36 @@ main:
 	mov	rax, QWORD PTR fs:40
 	mov	QWORD PTR -8[rbp], rax
 	xor	eax, eax
-	mov	DWORD PTR -10024[rbp], 0
-	mov	DWORD PTR -10020[rbp], 0
+	mov	DWORD PTR -10024[rbp], 0	# digits
+	mov	DWORD PTR -10020[rbp], 0	# letters
 	jmp	.L8
 .L9:
 	lea	rdx, -10020[rbp]
 	lea	rcx, -10024[rbp]
-	lea	rax, -10016[rbp]
+	lea	rax, -10016[rbp]	# string
 	mov	rsi, rcx
 	mov	rdi, rax
-	call	count
+	call	count    # вызов функции count с string в rdi, digits в rsi, letters в rdx
 .L8:
-	mov	rdx, QWORD PTR stdin[rip]
-	lea	rax, -10016[rbp]
-	mov	esi, 10000
-	mov	rdi, rax
-	call	fgets@PLT
-	test	rax, rax
+	mov	rdx, QWORD PTR stdin[rip] # stdin
+	lea	rax, -10016[rbp]	# string
+	mov	esi, 10000	# 10000
+	mov	rdi, rax	# string
+	call	fgets@PLT	# вызов функции fgets с string в rdi, 10000 в esi, stdin в rdx
+	test	rax, rax	# в rax лежит возвращаемое значение
 	jne	.L9
 	mov	eax, DWORD PTR -10024[rbp]
 	mov	esi, eax
 	lea	rax, .LC0[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT	# вызов функции printf с digits в esi
 	mov	eax, DWORD PTR -10020[rbp]
 	mov	esi, eax
 	lea	rax, .LC1[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT	# вызов функции printf с letters в esi
 	mov	eax, 0
 	mov	rdx, QWORD PTR -8[rbp]
 	sub	rdx, QWORD PTR fs:40
